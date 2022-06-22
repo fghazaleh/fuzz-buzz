@@ -10,21 +10,24 @@ type FuzzBuzzer interface {
 	GetOutput() string
 }
 
-type cc []FuzzBuzzer
-
 type puzzle struct {
-	collection cc
+	collection []FuzzBuzzer
 }
 
 func NewPuzzle() *puzzle {
-	return &puzzle{cc{}}
+	return &puzzle{[]FuzzBuzzer{}}
 }
 
 func (p *puzzle) Add(s FuzzBuzzer) {
 	p.collection = append(p.collection, s)
 }
 
-func (p puzzle) Handle(m int) string {
+func (p *puzzle) SetupDefault() {
+	p.Add(NewBuzz())
+	p.Add(NewFuzz())
+}
+
+func (p *puzzle) Handle(m int) string {
 	output := ""
 	var out string
 	for i := 1; i <= m; i++ {
